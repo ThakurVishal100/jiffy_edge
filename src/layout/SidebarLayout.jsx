@@ -13,32 +13,34 @@ import IvrBuilderPage from "../pages/IvrBuilder/IvrBuilderPage";
 import DirectoryManagementPage from "../pages/DirectoryManagement/DirectoryManagementPage";
 import AdminDashboardPage from "../pages/AdminDashboardPage/AdminDashboardPage";
 import AgentDashboardPage from "../pages/AgentDashboard/AgentDashboard";
+import BroadcastManagementPage from "../pages/BroadcastManagementPage/BroadcastManagementPage";
+import WhatsAppTemplatesPage from "../pages/WhatsAppTemplatesPage/WhatsAppTemplatesPage";
+import AuditLogsPage from "../pages/AuditLogsPage/AuditLogsPage";
+import SystemSettingsPage from "../pages/SystemSettingsPage/SystemSettingsPage";
 
 const SidebarLayout = () => {
   const [menus, setMenus] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   const { token, user } = useSelector((state) => state.auth);
   // const roleId = user?.roleId;
-  let menuNames = [];
+  // let menuNames = [];
   const roleId = localStorage.getItem("roleId");
 
   const renderContent = () => {
     switch (selectedMenu) {
       case "Dashboard":
-
-      if (selectedMenu === "Dashboard") {
-        switch (roleId) {
-          case "1":
-            return <SupervisorDashboardPage />;
-          case "2":
-            return <AgentDashboardPage />;
-          case "3":
-            return <AdminDashboardPage />;
-          // default:
-          //   return <SupervisorDashboardPage />; 
+        if (selectedMenu === "Dashboard") {
+          switch (roleId) {
+            case "1":
+              return <SupervisorDashboardPage />;
+            case "2":
+              return <AgentDashboardPage />;
+            case "3":
+              return <AdminDashboardPage />;
+            // default:
+            //   return <SupervisorDashboardPage />;
+          }
         }
-      }
-        
 
       case "Reports":
         return <ReportingPage />;
@@ -61,6 +63,18 @@ const SidebarLayout = () => {
       case "Directory":
         return <DirectoryManagementPage />;
 
+      case "Broadcasts":
+        return <BroadcastManagementPage />;
+
+      case "WhatsApp Templates":
+        return <WhatsAppTemplatesPage />;
+
+      case "Audit Logs":
+        return <AuditLogsPage />;
+
+      case "System Settings":
+        return <SystemSettingsPage />;
+
       default:
         return <Dashboard />;
     }
@@ -82,7 +96,7 @@ const SidebarLayout = () => {
           }
         );
 
-        menuNames = response.data.map((item) => item.menuName);
+        // menuNames = response.data.map((item) => item.menuName);
 
         // console.log("Menu data received from backend:", response.data);
         if (response.data) {

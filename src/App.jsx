@@ -33,6 +33,10 @@ import SupervisorDashboardPage from "./pages/SupervisorDashboardPage/SupervisorD
 
 
 import ProtectedRoute from "./ProtectedRoute"; 
+import BroadcastManagementPage from "./pages/BroadcastManagementPage/BroadcastManagementPage";
+import WhatsAppTemplatesPage from "./pages/WhatsAppTemplatesPage/WhatsAppTemplatesPage";
+import AuditLogsPage from "./pages/AuditLogsPage/AuditLogsPage";
+import SystemSettingsPage from "./pages/SystemSettingsPage/SystemSettingsPage";
 
 function App() {
   return (
@@ -73,6 +77,18 @@ function App() {
 
         {/* Optional fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
+
+        <Route path="/broadcast" element={ <BroadcastManagementPage/>} />
+
+        <Route path="/whatsapp-template" element={ <WhatsAppTemplatesPage/>} />
+
+        <Route path="/audit-logs" element={ <AuditLogsPage/>} />
+
+        <Route path="/audit-logs" element={ <AuditLogsPage/>} />
+
+        <Route path="/system-settings" element={ <SystemSettingsPage/>} />
+
+
       </Routes>
 
       <ToastContainer position="top-right" autoClose={3000} />
