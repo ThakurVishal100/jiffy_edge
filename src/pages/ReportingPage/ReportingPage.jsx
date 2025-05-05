@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { format } from "date-fns"; 
+import { format } from "date-fns";
 
 import {
   Card,
@@ -7,17 +7,19 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"; 
-import { Button } from "@/components/ui/button"; 
-import { Label } from "@/components/ui/label"; 
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"; 
-
+} from "@/components/ui/select";
+import { FiArrowLeft } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   Table,
   TableBody,
@@ -25,8 +27,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"; 
-
+} from "@/components/ui/table";
+import { setSelectedMenu } from "@/redux/slices/menuSlice";
 // Import Recharts components
 import {
   BarChart,
@@ -100,12 +102,14 @@ const performanceComparisonData = [
 ];
 
 // Colors for the Bar Chart
-const TOTAL_CALLS_COLOR = "#8884d8"; 
-const RESOLVED_CALLS_COLOR = "#82ca9d"; 
+const TOTAL_CALLS_COLOR = "#8884d8";
+const RESOLVED_CALLS_COLOR = "#82ca9d";
 
 // --- Main Page Component ---
 
 const ReportingPage = () => {
+  const dispatch = useDispatch();
+
   // --- State Variables for Filters ---
   const [reportType, setReportType] = useState("agent_performance");
   const [agent, setAgent] = useState("all");
@@ -129,7 +133,6 @@ const ReportingPage = () => {
     )}`;
   };
 
-  
   const handleGenerateReport = () => {
     console.log("Generating report with settings:", {
       reportType,
@@ -139,7 +142,6 @@ const ReportingPage = () => {
     // TODO: Add actual report generation logic (e.g., API call)
   };
 
-  
   const handleResetFilters = () => {
     setReportType("agent_performance");
     setAgent("all");
@@ -147,22 +149,34 @@ const ReportingPage = () => {
     console.log("Filters reset");
   };
 
-  
   const handleSaveReport = () => {
     console.log("Saving report settings:", { reportType, date, agent });
-    
   };
 
+  const handleBackButtonClick = () => {
+    // Dispatch action to change the selected menu to 'admin dashboard'
+    dispatch(setSelectedMenu("Dashboard"));
+  };
   // --- Component Render ---
   return (
     // Main container for the page
     <div className="flex flex-col min-h-screen bg-gray-100 p-6">
       {/* {/ Page Header /} */}
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Reporting</h1>
-        <p className="text-sm text-gray-500">
-          Generate and view contact center reports
-        </p>
+      <header className="mb-6 flex flex-col items-start gap-3">
+        <button
+          onClick={handleBackButtonClick}
+          className="text-gray-600 hover:text-gray-900 p-1 cursor-pointer"
+          aria-label="Go back"
+        >
+          <FiArrowLeft size={20} />
+        </button>
+
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Reporting</h1>
+          <p className="text-sm text-gray-500">
+            Generate and view contact center reports
+          </p>
+        </div>
       </header>
 
       {/* {/ Report Settings S/ection /} */}
@@ -387,7 +401,7 @@ const ReportingPage = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={performanceComparisonData}
-                  margin={{ top: 5, right: 10, left: -15, bottom: 20 }} 
+                  margin={{ top: 5, right: 10, left: -15, bottom: 20 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis
@@ -400,7 +414,7 @@ const ReportingPage = () => {
                   <YAxis fontSize={11} tickLine={false} axisLine={false} />
                   {/* {/ Custom Tooltip /} */}
                   <RechartsTooltip
-                    cursor={{ fill: "rgba(206, 213, 224, 0.3)" }} 
+                    cursor={{ fill: "rgba(206, 213, 224, 0.3)" }}
                     content={({ active, payload, label }) => {
                       if (active && payload && payload.length) {
                         return (

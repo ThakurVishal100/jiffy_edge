@@ -34,7 +34,6 @@ import {
   TableRow,
 } from "@/components/ui/table"; // Table components
 
-
 import {
   Calendar as CalendarIcon,
   ChevronDown,
@@ -42,8 +41,11 @@ import {
   Play,
   Download,
 } from "lucide-react";
-import DateRangePicker from "../DateRangePicker/DateRangePicker";
+import { FiArrowLeft } from "react-icons/fi";
 
+import DateRangePicker from "../DateRangePicker/DateRangePicker";
+import { useDispatch } from "react-redux"; // Redux hook for dispatching actions
+import { setSelectedMenu } from "@/redux/slices/menuSlice"; // Redux action to set the selected menu
 
 const mockRecordings = [
   {
@@ -109,6 +111,8 @@ const CallRecordingsPage = () => {
     to: new Date(2025, 3, 30),
   });
 
+  const dispatch = useDispatch(); // Initialize Redux dispatch
+
   // State for the selected agent filter
   const [agent, setAgent] = useState("all"); // Default to "All Agents"
   // State for the selected queue filter
@@ -146,10 +150,23 @@ const CallRecordingsPage = () => {
     // TODO: Add actual API call or filtering logic here
   };
 
+  const handleBackButtonClick = () => {
+      // Dispatch action to change the selected menu to 'admin dashboard'
+      dispatch(setSelectedMenu("Dashboard"));
+    };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 p-6">
       {/* {/ Page Header Section /} */}
-      <header className="mb-6">
+      <header className="mb-6 flex flex-col items-start gap-3">
+        <button
+          onClick={handleBackButtonClick}
+          className="text-gray-600 hover:text-gray-900 p-1 cursor-pointer"
+          aria-label="Go back"
+        >
+          <FiArrowLeft size={20} />
+        </button>
+
         <h1 className="text-2xl font-bold text-gray-900 mb-1">
           Call Recordings
         </h1>
@@ -190,8 +207,6 @@ const CallRecordingsPage = () => {
 
                 {/* You can add any other logic or UI elements you need */}
               </div>
-              
-
             </div>
 
             {/* {/ Agent Select Filter /} */}
@@ -282,8 +297,8 @@ const CallRecordingsPage = () => {
           <div className="flex justify-end">
             {/* {/ Aligns button to the right /} */}
             <Button
-              onClick={handleSearch} 
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2" 
+              onClick={handleSearch}
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2"
             >
               <Search className="h-4 w-4 mr-2" /> Search
               {/* {/ Search Icon /} */}

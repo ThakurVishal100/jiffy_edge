@@ -1,53 +1,71 @@
-import React from 'react';
-import { Search, Plus, Calendar, MoreVertical } from 'lucide-react';
+import React from "react";
+import {
+  Search,
+  Plus,
+  Calendar,
+  MoreVertical,
+  Eye,
+  Edit,
+  Mail,
+  Trash2,
+  Copy,
+  Play,
+} from "lucide-react";
+
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 // Mock data for broadcasts
 const broadcasts = [
   {
     id: 1,
-    name: 'Customer Satisfaction Survey',
-    description: 'Post-call survey for support interactions',
-    type: 'Voice',
-    status: 'Scheduled',
-    schedule: 'Apr 15, 2025, 02:30 PM',
-    progress: { type: 'recipients', value: 250 }
+    name: "Customer Satisfaction Survey",
+    description: "Post-call survey for support interactions",
+    type: "Voice",
+    status: "Scheduled",
+    schedule: "Apr 15, 2025, 02:30 PM",
+    progress: { type: "recipients", value: 250 },
   },
   {
     id: 2,
-    name: 'System Maintenance Notification',
-    description: 'Alert about upcoming system downtime',
-    type: 'Sms',
-    status: 'Active',
-    schedule: 'Apr 11, 2025, 01:30 PM',
-    progress: { type: 'progress', current: 324, total: 500 }
+    name: "System Maintenance Notification",
+    description: "Alert about upcoming system downtime",
+    type: "Sms",
+    status: "Active",
+    schedule: "Apr 11, 2025, 01:30 PM",
+    progress: { type: "progress", current: 324, total: 500 },
   },
   {
     id: 3,
-    name: 'New Feature Announcement',
-    description: 'Information about latest product features',
-    type: 'Email',
-    status: 'Completed',
-    schedule: 'Apr 5, 2025, 04:00 PM',
-    progress: { type: 'progress', current: 1000, total: 1000 }
+    name: "New Feature Announcement",
+    description: "Information about latest product features",
+    type: "Email",
+    status: "Completed",
+    schedule: "Apr 5, 2025, 04:00 PM",
+    progress: { type: "progress", current: 1000, total: 1000 },
   },
   {
     id: 4,
-    name: 'Payment Reminder',
-    description: 'Gentle reminder about upcoming payment',
-    type: 'Sms',
-    status: 'Draft',
+    name: "Payment Reminder",
+    description: "Gentle reminder about upcoming payment",
+    type: "Sms",
+    status: "Draft",
     schedule: null,
-    progress: { type: 'recipients', value: 150 }
+    progress: { type: "recipients", value: 150 },
   },
   {
     id: 5,
-    name: 'Holiday Hours Announcement',
-    description: 'Special holiday operating hours',
-    type: 'Voice',
-    status: 'Scheduled',
-    schedule: 'Apr 20, 2025, 05:30 PM',
-    progress: { type: 'recipients', value: 300 }
-  }
+    name: "Holiday Hours Announcement",
+    description: "Special holiday operating hours",
+    type: "Voice",
+    status: "Scheduled",
+    schedule: "Apr 20, 2025, 05:30 PM",
+    progress: { type: "recipients", value: 300 },
+  },
 ];
 
 // Custom UI Components to replace shadcn/ui imports
@@ -59,14 +77,14 @@ const Input = ({ className, ...props }) => (
 );
 
 const Button = ({ children, className, variant, size, ...props }) => {
-  const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
-  const variantStyles = variant === "ghost" 
-    ? "hover:bg-gray-100 hover:text-gray-900 border-transparent" 
-    : "bg-blue-600 text-white hover:bg-blue-700";
-  const sizeStyles = size === "sm" 
-    ? "text-xs px-2 py-1" 
-    : "text-sm px-4 py-2";
-    
+  const baseStyles =
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2";
+  const variantStyles =
+    variant === "ghost"
+      ? "hover:bg-gray-100 hover:text-gray-900 border-transparent"
+      : "bg-blue-600 text-white hover:bg-blue-700";
+  const sizeStyles = size === "sm" ? "text-xs px-2 py-1" : "text-sm px-4 py-2";
+
   return (
     <button
       className={`${baseStyles} ${variantStyles} ${sizeStyles} ${className}`}
@@ -78,7 +96,10 @@ const Button = ({ children, className, variant, size, ...props }) => {
 };
 
 const Progress = ({ value, className, ...props }) => (
-  <div className={`w-full bg-gray-200 rounded-full h-2 ${className}`} {...props}>
+  <div
+    className={`w-full bg-gray-200 rounded-full h-2 ${className}`}
+    {...props}
+  >
     <div
       className="bg-blue-600 h-2 rounded-full"
       style={{ width: `${value}%` }}
@@ -89,41 +110,43 @@ const Progress = ({ value, className, ...props }) => (
 // Badge styling helper function
 const getBadgeStyle = (type) => {
   switch (type) {
-    case 'Voice':
-      return 'bg-blue-100 text-blue-800';
-    case 'Sms':
-      return 'bg-gray-100 text-gray-800';
-    case 'Email':
-      return 'bg-green-100 text-green-800';
+    case "Voice":
+      return "bg-blue-100 text-blue-800";
+    case "Sms":
+      return "bg-gray-100 text-gray-800";
+    case "Email":
+      return "bg-green-100 text-green-800";
     default:
-      return 'bg-gray-100 text-gray-800';
+      return "bg-gray-100 text-gray-800";
   }
 };
 
 const getStatusBadgeStyle = (status) => {
   switch (status) {
-    case 'Active':
-      return 'bg-green-100 text-green-800';
-    case 'Scheduled':
-      return 'bg-blue-100 text-blue-800';
-    case 'Completed':
-      return 'bg-gray-100 text-gray-800';
-    case 'Draft':
-      return 'bg-red-100 text-red-800';
+    case "Active":
+      return "bg-green-100 text-green-800";
+    case "Scheduled":
+      return "bg-blue-100 text-blue-800";
+    case "Completed":
+      return "bg-gray-100 text-gray-800";
+    case "Draft":
+      return "bg-red-100 text-red-800";
     default:
-      return 'bg-gray-100 text-gray-800';
+      return "bg-gray-100 text-gray-800";
   }
 };
 
 export default function BroadcastManagementPage() {
-  const [activeTab, setActiveTab] = React.useState('all');
+  const [activeTab, setActiveTab] = React.useState("all");
 
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       {/* {/ Page Header /} */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-1">Broadcast Management</h1>
-        <p className="text-sm text-gray-500">Create and manage automated communication broadcasts</p>
+        <p className="text-sm text-gray-500">
+          Create and manage automated communication broadcasts
+        </p>
       </div>
 
       {/* {/ Toolbar Section /} */}
@@ -132,10 +155,10 @@ export default function BroadcastManagementPage() {
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <Search className="h-4 w-4 text-gray-400" />
           </div>
-          <Input 
-            type="search" 
-            placeholder="Search broadcasts..." 
-            className="pl-10 w-full" 
+          <Input
+            type="search"
+            placeholder="Search broadcasts..."
+            className="pl-10 w-full"
           />
         </div>
         <Button className="w-full sm:w-auto">
@@ -147,13 +170,13 @@ export default function BroadcastManagementPage() {
       <div className="mb-6">
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
-            {['All', 'Active', 'Scheduled', 'Completed', 'Draft'].map((tab) => (
+            {["All", "Active", "Scheduled", "Completed", "Draft"].map((tab) => (
               <button
                 key={tab}
                 className={`px-4 py-2 font-medium text-sm ${
-                  activeTab === tab.toLowerCase() 
-                    ? 'border-b-2 border-blue-500 text-blue-600' 
-                    : 'text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  activeTab === tab.toLowerCase()
+                    ? "border-b-2 border-blue-500 text-blue-600"
+                    : "text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
                 onClick={() => setActiveTab(tab.toLowerCase())}
               >
@@ -163,25 +186,39 @@ export default function BroadcastManagementPage() {
           </nav>
         </div>
       </div>
-      
+
       {/* {/ Tab Content /} */}
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <div className="mb-4">
           <h2 className="text-lg font-semibold mb-1">Broadcasts</h2>
-          <p className="text-sm text-gray-500">Manage automated communications campaigns</p>
+          <p className="text-sm text-gray-500">
+            Manage automated communications campaigns
+          </p>
         </div>
-        
+
         {/* {/ Table /} */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead>
               <tr className="border-b">
-                <th className="text-xs text-gray-500 uppercase py-3 px-4">Name</th>
-                <th className="text-xs text-gray-500 uppercase py-3 px-4">Type</th>
-                <th className="text-xs text-gray-500 uppercase py-3 px-4">Status</th>
-                <th className="text-xs text-gray-500 uppercase py-3 px-4">Schedule</th>
-                <th className="text-xs text-gray-500 uppercase py-3 px-4">Progress</th>
-                <th className="text-xs text-gray-500 uppercase py-3 px-4">Actions</th>
+                <th className="text-xs text-gray-500 uppercase py-3 px-4">
+                  Name
+                </th>
+                <th className="text-xs text-gray-500 uppercase py-3 px-4">
+                  Type
+                </th>
+                <th className="text-xs text-gray-500 uppercase py-3 px-4">
+                  Status
+                </th>
+                <th className="text-xs text-gray-500 uppercase py-3 px-4">
+                  Schedule
+                </th>
+                <th className="text-xs text-gray-500 uppercase py-3 px-4">
+                  Progress
+                </th>
+                <th className="text-xs text-gray-500 uppercase py-3 px-4">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -189,15 +226,25 @@ export default function BroadcastManagementPage() {
                 <tr key={broadcast.id} className="border-b last:border-b-0">
                   <td className="py-4 px-4">
                     <div className="font-medium">{broadcast.name}</div>
-                    <div className="text-sm text-gray-500">{broadcast.description}</div>
+                    <div className="text-sm text-gray-500">
+                      {broadcast.description}
+                    </div>
                   </td>
                   <td className="py-4 px-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getBadgeStyle(broadcast.type)}`}>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getBadgeStyle(
+                        broadcast.type
+                      )}`}
+                    >
                       {broadcast.type}
                     </span>
                   </td>
                   <td className="py-4 px-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getStatusBadgeStyle(broadcast.status)}`}>
+                    <span
+                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getStatusBadgeStyle(
+                        broadcast.status
+                      )}`}
+                    >
                       {broadcast.status}
                     </span>
                   </td>
@@ -208,29 +255,80 @@ export default function BroadcastManagementPage() {
                         <span>{broadcast.schedule}</span>
                       </div>
                     ) : (
-                      '—'
+                      "—"
                     )}
                   </td>
                   <td className="py-4 px-4">
-                    {broadcast.progress.type === 'recipients' ? (
+                    {broadcast.progress.type === "recipients" ? (
                       <div>{broadcast.progress.value} recipients</div>
                     ) : (
                       <div>
-                        <Progress 
-                          value={(broadcast.progress.current / broadcast.progress.total) * 100} 
+                        <Progress
+                          value={
+                            (broadcast.progress.current /
+                              broadcast.progress.total) *
+                            100
+                          }
                           className="h-2 mb-1"
                         />
                         <div className="text-xs">
-                          {broadcast.progress.current} / {broadcast.progress.total} 
-                          ({Math.round((broadcast.progress.current / broadcast.progress.total) * 100)}%)
+                          {broadcast.progress.current} /{" "}
+                          {broadcast.progress.total}(
+                          {Math.round(
+                            (broadcast.progress.current /
+                              broadcast.progress.total) *
+                              100
+                          )}
+                          %)
                         </div>
                       </div>
                     )}
                   </td>
                   <td className="py-4 px-4">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <MoreVertical className="h-4 w-4 text-gray-500" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                        >
+                          <MoreVertical className="h-4 w-4 text-gray-500" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-40">
+                        <DropdownMenuItem
+                          onClick={() => handleView(row.id)}
+                          className="flex items-center gap-2"
+                        >
+                          <Edit className="w-4 h-4" /> 
+                          Edit
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => handleEdit(row.id)}
+                          className="flex items-center gap-2"
+                        >
+                          <Copy className="w-4 h-4" /> 
+                          Duplicate
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => handleDisable(row.id)}
+                          className="flex items-center gap-2"
+                        >
+                          <Play className="w-4 h-4" /> 
+                          Start
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(row.id)}
+                          className="text-red-600 hover:text-red-600 flex items-center gap-2"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 </tr>
               ))}

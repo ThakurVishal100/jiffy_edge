@@ -19,7 +19,6 @@ import AgentDashboard from "./pages/AgentDashboard/AgentDashboard";
 import CallCard from "./pages/CallCard";
 import VoicemailModalContent from "./pages/VoicemailModalContent";
 import ProfilePage from "./pages/Activites/ProfilePage";
-import Settings from "./Activities/Settings";
 // import SupervisorDashboard from "./pages/SupervisorDashboard/SupervisorDashboard ";
 import SilentMonitoringModalContent from "./pages/SilentMonitoringModalContent";
 import CallRecordingsPage from "./pages/CallRecordings/CallRecordingsPage";
@@ -56,7 +55,7 @@ function App() {
             element={<SupervisorDashboardPage />}
           />
           <Route path="/profile-page" element={<ProfilePage />} />
-          <Route path="/settings" element={<Settings />} />
+          {/* <Route path="/settings" element={<Settings />} /> */}
           <Route path="/call-recordings" element={<CallRecordingsPage />} />
           <Route path="/reports" element={<ReportingPage />} />
           <Route path="/queue-management" element={<QueueManagementPage />} />

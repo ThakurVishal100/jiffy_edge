@@ -1,42 +1,67 @@
-import { useState } from 'react';
-import { 
-  Settings, 
-  Save, 
-  Database, 
-  Trash2, 
-  Archive, 
-  CheckCircle, 
-  ChevronDown 
-} from 'lucide-react';
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Save, RefreshCw } from "lucide-react";
 
 const SystemSettingsPage = () => {
   // State for form fields
-  const [companyName, setCompanyName] = useState('Contact Center Inc.');
-  const [supportEmail, setSupportEmail] = useState('support@contactcenter.com');
-  const [supportPhone, setSupportPhone] = useState('+1 (555) 123-4567');
-  const [timezone, setTimezone] = useState('Eastern Time (ET)');
-  const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
-  const [systemLanguage, setSystemLanguage] = useState('English (US)');
+  const [companyName, setCompanyName] = useState("Contact Center Inc.");
+  const [supportEmail, setSupportEmail] = useState("support@contactcenter.com");
+  const [supportPhone, setSupportPhone] = useState("+1 (555) 123-4567");
+  const [timezone, setTimezone] = useState("Eastern Time (ET)");
+  const [dateFormat, setDateFormat] = useState("MM/DD/YYYY");
+  const [systemLanguage, setSystemLanguage] = useState("English (US)");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
-  
-  // State for active tab
-  const [activeTab, setActiveTab] = useState('General');
-  
+
+  // Call settings state
+  const [maxQueueTime, setMaxQueueTime] = useState(300);
+  const [agentWrapUpTime, setAgentWrapUpTime] = useState(60);
+  const [recordAllCalls, setRecordAllCalls] = useState(true);
+  const [enableTranscription, setEnableTranscription] = useState(false);
+  const [afterHoursMessage, setAfterHoursMessage] = useState(
+    "Thank you for calling. Our office is currently closed. Please call back during our normal business hours."
+  );
+  const [holidayMessage, setHolidayMessage] = useState(
+    "Thank you for calling. Our office is closed for the holiday. Please call back during our normal business hours."
+  );
+  const [maxVoicemailLength, setMaxVoicemailLength] = useState(120);
+
+  // Notification settings state
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [smsNotifications, setSmsNotifications] = useState(false);
+  const [missedCallAlerts, setMissedCallAlerts] = useState(true);
+  const [systemAlerts, setSystemAlerts] = useState(true);
+  const [performanceReports, setPerformanceReports] = useState(true);
+  const [reportFrequency, setReportFrequency] = useState("Weekly");
+
+  // Active tab state
+  const [activeTab, setActiveTab] = useState("general");
+
   // Save settings handler
   const handleSaveSettings = () => {
-    console.log('Settings saved');
+    console.log("Settings saved");
     // Implementation for saving settings would go here
   };
-  
+
   // Clear cache handler
   const handleClearCache = () => {
-    console.log('Cache cleared');
+    console.log("Cache cleared");
     // Implementation for clearing cache would go here
   };
-  
+
   // Backup now handler
   const handleBackupNow = () => {
-    console.log('Backup started');
+    console.log("Backup started");
     // Implementation for starting backup would go here
   };
 
@@ -45,260 +70,605 @@ const SystemSettingsPage = () => {
       <div className="container mx-auto p-6">
         {/* {/ Page Header /} */}
         <h1 className="text-2xl font-bold mb-1">System Settings</h1>
-        <p className="text-sm text-gray-500 mb-6">Configure global system preferences and parameters</p>
-        
-        {/* {/ Tabs /} */}
-        <div className="mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
-              {['General', 'Call Settings', 'Notifications'].map((tab) => (
-                <button
-                  key={tab}
-                  className={`py-4 px-6 text-sm font-medium ${
-                    activeTab === tab
-                      ? 'border-b-2 border-blue-600 text-blue-600'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab}
-                </button>
-              ))}
-            </nav>
+        <p className="text-sm text-gray-500 mb-6">
+          Configure global system preferences and parameters
+        </p>
+
+        <div className=" min-h-screen p-2">
+          <div className=" ">
+            <Tabs
+              defaultValue={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
+              <div className="">
+                <TabsList className="inline-flex space-x-2 bg-gray-50 p-1 rounded-lg">
+                  <TabsTrigger
+                    value="general"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm rounded-md transition cursor-pointer"
+                  >
+                    General
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="call-settings"
+                    className="px-4 py-2 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm rounded-md transition cursor-pointer"
+                  >
+                    Call Settings
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="notifications"
+                    className="px-4 py-2 text-sm font-medium text-gray-500 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm rounded-md transition cursor-pointer"
+                  >
+                    Notifications
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              {/* General Tab Content */}
+              <TabsContent value="general" className="mt-4">
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
+                  <div className="flex items-center mb-2">
+                    <h2 className="text-xl font-medium flex items-center">
+                      <span className="mr-2">🌐</span>
+                      General Settings
+                    </h2>
+                  </div>
+                  <p className="text-gray-500 mb-6">
+                    Configure basic system settings and preferences
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Company Name
+                      </label>
+                      <Input
+                        value={companyName}
+                        onChange={(e) => setCompanyName(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Support Email
+                      </label>
+                      <Input
+                        type="email"
+                        value={supportEmail}
+                        onChange={(e) => setSupportEmail(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Support Phone
+                      </label>
+                      <Input
+                        value={supportPhone}
+                        onChange={(e) => setSupportPhone(e.target.value)}
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Timezone
+                      </label>
+                      <Select value={timezone} onValueChange={setTimezone}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select timezone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Eastern Time (ET)">
+                            Eastern Time (ET)
+                          </SelectItem>
+                          <SelectItem value="Central Time (CT)">
+                            Central Time (CT)
+                          </SelectItem>
+                          <SelectItem value="Mountain Time (MT)">
+                            Mountain Time (MT)
+                          </SelectItem>
+                          <SelectItem value="Pacific Time (PT)">
+                            Pacific Time (PT)
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Date Format
+                      </label>
+                      <Select value={dateFormat} onValueChange={setDateFormat}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select date format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
+                          <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
+                          <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        System Language
+                      </label>
+                      <Select
+                        value={systemLanguage}
+                        onValueChange={setSystemLanguage}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="English (US)">
+                            English (US)
+                          </SelectItem>
+                          <SelectItem value="English (UK)">
+                            English (UK)
+                          </SelectItem>
+                          <SelectItem value="Spanish">Spanish</SelectItem>
+                          <SelectItem value="French">French</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <hr className="my-6 border-gray-200" />
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          Maintenance Mode
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          When enabled, the system will be unavailable to
+                          regular users.
+                        </p>
+                      </div>
+                      <Switch
+                        checked={maintenanceMode}
+                        onCheckedChange={setMaintenanceMode}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex justify-end">
+                    <Button className="flex items-center gap-2">
+                      <Save size={16} />
+                      Save Settings
+                    </Button>
+                  </div>
+                </div>
+
+                {/* System Maintenance Section */}
+                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                  <div className="flex items-center mb-2">
+                    <h2 className="text-xl font-medium flex items-center">
+                      <span className="mr-2">📋</span>
+                      System Maintenance
+                    </h2>
+                  </div>
+                  <p className="text-gray-500 mb-6">
+                    Manage system cache and backups
+                  </p>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          System Cache
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Clear system cache to resolve performance issues
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="rotate-90"
+                        >
+                          <path
+                            d="M20 4V10.5C20 11.8807 18.8807 13 17.5 13H4.5C3.11929 13 2 11.8807 2 10.5V4"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M22 2L14 10M14 2L22 10"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        Clear Cache
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          System Backup
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Backup all system data including configurations
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="flex items-center gap-2"
+                      >
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <rect
+                            x="4"
+                            y="4"
+                            width="16"
+                            height="16"
+                            rx="2"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          />
+                          <path d="M8 8H16V10H8V8Z" fill="currentColor" />
+                          <path d="M8 12H16V14H8V12Z" fill="currentColor" />
+                          <path d="M8 16H12V18H8V16Z" fill="currentColor" />
+                        </svg>
+                        Backup Now
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="pl-4 border-l-4 border-green-500 py-2">
+                    <div className="flex items-center mb-1">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="text-green-500 mr-2"
+                      >
+                        <path
+                          d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        />
+                        <path
+                          d="M8 12L11 15L16 9"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span className="font-medium text-gray-700">
+                        Last Automated Backup
+                      </span>
+                    </div>
+                    <div className="ml-7">
+                      <p className="text-sm text-gray-600">
+                        April 10, 2025 at 02:00 AM
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        System backups are automatically performed daily at 2
+                        AM.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Call Settings Tab Content */}
+              <TabsContent
+                value="call-settings"
+                className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-4"
+              >
+                <div className="flex items-center mb-2">
+                  <h2 className="text-xl font-medium">Call Settings</h2>
+                </div>
+                <p className="text-gray-500 mb-6">
+                  Configure call handling and recording preferences
+                </p>
+
+                <div className="space-y-8">
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Maximum Queue Time (seconds)
+                      </label>
+                      <span className="text-sm text-gray-700">
+                        {maxQueueTime} seconds
+                      </span>
+                    </div>
+                    <Slider
+                      value={[maxQueueTime]}
+                      min={60}
+                      max={600}
+                      step={30}
+                      onValueChange={(value) => setMaxQueueTime(value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Maximum time callers can wait in queue before being
+                      redirected
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Agent Wrap-Up Time (seconds)
+                      </label>
+                      <span className="text-sm text-gray-700">
+                        {agentWrapUpTime} seconds
+                      </span>
+                    </div>
+                    <Slider
+                      value={[agentWrapUpTime]}
+                      min={30}
+                      max={300}
+                      step={10}
+                      onValueChange={(value) => setAgentWrapUpTime(value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Time allowed for agents to complete tasks after ending a
+                      call
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-700">
+                            Record All Calls
+                          </h3>
+                          <p className="text-xs text-gray-500">
+                            Automatically record all incoming and outgoing calls
+                          </p>
+                        </div>
+                        <Switch
+                          checked={recordAllCalls}
+                          onCheckedChange={setRecordAllCalls}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-700">
+                            Enable Call Transcription
+                          </h3>
+                          <p className="text-xs text-gray-500">
+                            Automatically transcribe recorded calls
+                          </p>
+                        </div>
+                        <Switch
+                          checked={enableTranscription}
+                          onCheckedChange={setEnableTranscription}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      After Hours Message
+                    </label>
+                    <Input
+                      value={afterHoursMessage}
+                      onChange={(e) => setAfterHoursMessage(e.target.value)}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Message played to callers outside of business hours
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Holiday Message
+                    </label>
+                    <Input
+                      value={holidayMessage}
+                      onChange={(e) => setHolidayMessage(e.target.value)}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Message played to callers during holidays
+                    </p>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Max Voicemail Length (seconds)
+                      </label>
+                      <span className="text-sm text-gray-700">
+                        {maxVoicemailLength} seconds
+                      </span>
+                    </div>
+                    <Slider
+                      value={[maxVoicemailLength]}
+                      min={30}
+                      max={300}
+                      step={10}
+                      onValueChange={(value) => setMaxVoicemailLength(value[0])}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Maximum recording length for voicemails
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-end">
+                  <Button className="flex items-center gap-2">
+                    <Save size={16} />
+                    Save Call Settings
+                  </Button>
+                </div>
+              </TabsContent>
+
+              {/* Notifications Tab Content */}
+              <TabsContent
+                value="notifications"
+                className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-4"
+              >
+                <div className="flex items-center mb-2">
+                  <h2 className="text-xl font-medium">Notification Settings</h2>
+                </div>
+                <p className="text-gray-500 mb-6">
+                  Configure system notifications and alerts
+                </p>
+
+                <div className="space-y-6">
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          Email Notifications
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Receive important system notifications via email
+                        </p>
+                      </div>
+                      <Switch
+                        checked={emailNotifications}
+                        onCheckedChange={setEmailNotifications}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          SMS Notifications
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Receive urgent alerts via SMS
+                        </p>
+                      </div>
+                      <Switch
+                        checked={smsNotifications}
+                        onCheckedChange={setSmsNotifications}
+                      />
+                    </div>
+                  </div>
+
+                  <h3 className="text-lg font-medium text-gray-700 mt-6 mb-2">
+                    Alert Types
+                  </h3>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          Missed Call Alerts
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Notify when calls are missed or abandoned
+                        </p>
+                      </div>
+                      <Switch
+                        checked={missedCallAlerts}
+                        onCheckedChange={setMissedCallAlerts}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          System Alerts
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Receive notifications about system issues
+                        </p>
+                      </div>
+                      <Switch
+                        checked={systemAlerts}
+                        onCheckedChange={setSystemAlerts}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-700">
+                          Performance Reports
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                          Receive scheduled performance reports
+                        </p>
+                      </div>
+                      <Switch
+                        checked={performanceReports}
+                        onCheckedChange={setPerformanceReports}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Report Frequency
+                    </label>
+                    <Select
+                      value={reportFrequency}
+                      onValueChange={setReportFrequency}
+                      disabled={!performanceReports}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select frequency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Daily">Daily</SelectItem>
+                        <SelectItem value="Weekly">Weekly</SelectItem>
+                        <SelectItem value="Monthly">Monthly</SelectItem>
+                        <SelectItem value="Quarterly">Quarterly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      How often to receive scheduled reports
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-end">
+                  <Button className="flex items-center gap-2">
+                    <Save size={16} />
+                    Save Notification Settings
+                  </Button>
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
-        
-        {/* {/ Tab Content - General /} */}
-        {activeTab === 'General' && (
-          <div>
-            {/* {/ General Settings Card /} */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-6">
-              <div className="flex items-center mb-4">
-                <Settings className="h-5 w-5 text-gray-600" />
-                <div className="ml-2">
-                  <h2 className="text-lg font-semibold">General Settings</h2>
-                  <p className="text-sm text-gray-500">Configure basic system settings and preferences</p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                {/* {/ Company Name /} */}
-                <div>
-                  <label htmlFor="company-name" className="block mb-2 text-sm font-medium text-gray-700">
-                    Company Name
-                  </label>
-                  <input
-                    id="company-name"
-                    type="text"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                  />
-                </div>
-                
-                {/* {/ Support Email /} */}
-                <div>
-                  <label htmlFor="support-email" className="block mb-2 text-sm font-medium text-gray-700">
-                    Support Email
-                  </label>
-                  <input
-                    id="support-email"
-                    type="email"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={supportEmail}
-                    onChange={(e) => setSupportEmail(e.target.value)}
-                  />
-                </div>
-                
-                {/* {/ Support Phone /} */}
-                <div>
-                  <label htmlFor="support-phone" className="block mb-2 text-sm font-medium text-gray-700">
-                    Support Phone
-                  </label>
-                  <input
-                    id="support-phone"
-                    type="tel"
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    value={supportPhone}
-                    onChange={(e) => setSupportPhone(e.target.value)}
-                  />
-                </div>
-                
-                {/* {/ Timezone /} */}
-                <div>
-                  <label htmlFor="timezone" className="block mb-2 text-sm font-medium text-gray-700">
-                    Timezone
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="timezone"
-                      className="w-full appearance-none rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      value={timezone}
-                      onChange={(e) => setTimezone(e.target.value)}
-                    >
-                      <option>Eastern Time (ET)</option>
-                      <option>Pacific Time (PT)</option>
-                      <option>Central Time (CT)</option>
-                      <option>Mountain Time (MT)</option>
-                      <option>GMT</option>
-                      <option>UTC</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <ChevronDown className="h-4 w-4 text-gray-400" />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* {/ Date Format /} */}
-                <div>
-                  <label htmlFor="date-format" className="block mb-2 text-sm font-medium text-gray-700">
-                    Date Format
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="date-format"
-                      className="w-full appearance-none rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      value={dateFormat}
-                      onChange={(e) => setDateFormat(e.target.value)}
-                    >
-                      <option>MM/DD/YYYY</option>
-                      <option>DD/MM/YYYY</option>
-                      <option>YYYY/MM/DD</option>
-                      <option>MM-DD-YYYY</option>
-                      <option>DD-MM-YYYY</option>
-                      <option>YYYY-MM-DD</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <ChevronDown className="h-4 w-4 text-gray-400" />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* {/ System Language /} */}
-                <div>
-                  <label htmlFor="system-language" className="block mb-2 text-sm font-medium text-gray-700">
-                    System Language
-                  </label>
-                  <div className="relative">
-                    <select
-                      id="system-language"
-                      className="w-full appearance-none rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      value={systemLanguage}
-                      onChange={(e) => setSystemLanguage(e.target.value)}
-                    >
-                      <option>English (US)</option>
-                      <option>English (UK)</option>
-                      <option>Spanish</option>
-                      <option>French</option>
-                      <option>German</option>
-                      <option>Chinese</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                      <ChevronDown className="h-4 w-4 text-gray-400" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* {/ Maintenance Mode Toggle /} */}
-              <div className="flex justify-between items-center border-t pt-6 mb-6">
-                <div>
-                  <h3 className="font-medium text-gray-700">Maintenance Mode</h3>
-                  <p className="text-sm text-gray-600">When enabled, the system will be unavailable to regular users.</p>
-                </div>
-                <label className="inline-flex items-center cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    className="sr-only peer" 
-                    checked={maintenanceMode}
-                    onChange={() => setMaintenanceMode(!maintenanceMode)}
-                  />
-                  <div className="relative w-11 h-6 bg-gray-200 peer-checked:bg-blue-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                </label>
-              </div>
-              
-              {/* {/ Save Button /} */}
-              <div className="flex justify-end">
-                <button
-                  onClick={handleSaveSettings}
-                  className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  Save Settings
-                </button>
-              </div>
-            </div>
-            
-            {/* {/ System Maintenance Card /} */}
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <div className="flex items-center mb-4">
-                <Database className="h-5 w-5 text-gray-600" />
-                <div className="ml-2">
-                  <h2 className="text-lg font-semibold">System Maintenance</h2>
-                  <p className="text-sm text-gray-500">Manage system cache and backups</p>
-                </div>
-              </div>
-              
-              {/* {/ System Cache /} */}
-              <div className="flex justify-between items-center py-4 border-b">
-                <div>
-                  <h3 className="font-medium text-gray-700">System Cache</h3>
-                  <p className="text-sm text-gray-600">Clear system cache to resolve performance issues</p>
-                </div>
-                <button
-                  onClick={handleClearCache}
-                  className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Clear Cache
-                </button>
-              </div>
-              
-              {/* {/ System Backup /} */}
-              <div className="flex justify-between items-center py-4 border-b">
-                <div>
-                  <h3 className="font-medium text-gray-700">System Backup</h3>
-                  <p className="text-sm text-gray-600">Backup all system data including configurations</p>
-                </div>
-                <button
-                  onClick={handleBackupNow}
-                  className="flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-                >
-                  <Archive className="h-4 w-4 mr-2" />
-                  Backup Now
-                </button>
-              </div>
-              
-              {/* {/ Last Backup Info /} */}
-              <div className="flex items-start pt-4">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
-                <div className="ml-2">
-                  <div className="text-sm text-gray-600">
-                    <span className="font-medium">Last Automated Backup:</span> April 10, 2025 at 02:00 AM
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    System backups are automatically performed daily at 2 AM.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* {/ Other tabs would be implemented here /} */}
-        {activeTab === 'Call Settings' && (
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-lg font-semibold mb-4">Call Settings Content</h2>
-            <p className="text-gray-500">Call settings configuration would appear here.</p>
-          </div>
-        )}
-        
-        {activeTab === 'Notifications' && (
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <h2 className="text-lg font-semibold mb-4">Notifications Content</h2>
-            <p className="text-gray-500">Notification settings configuration would appear here.</p>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -212,10 +212,10 @@ const slaData = [
 ];
 
 const agentBreakdownData = [
-  { name: "Ready", value: 29, fill: "#4ade80" }, // Example: Using shadcn chart-2 (often green)
-  { name: "On Call", value: 39, fill: "#facc15" }, // Example: Using shadcn chart-5 (often red)
-  { name: "Not Ready", value: 20, fill: "#f87171" }, // Example: Using shadcn chart-4 (often orange/yellow)
-  { name: "Wrap-up", value: 14, fill: "#f87134" }, // Example: Using shadcn chart-1 (often blue)
+  { name: "Ready", value: 29, fill: "#4ade80" },
+  { name: "On Call", value: 39, fill: "#facc15" },
+  { name: "Not Ready", value: 20, fill: "#f87171" },
+  { name: "Wrap-up", value: 14, fill: "#f87134" },
 ];
 
 const kpiData = [
@@ -307,6 +307,27 @@ const slaConfig = {
   // Key matches data key, value defines label and color variable
   SLA: { label: "SLA %", color: "hsl(var(--chart-1))" },
 };
+
+const renderCustomizedLabel = ({ cx, cy, midAngle, outerRadius, percent }) => {
+  const RADIAN = Math.PI / 180;
+  const radius = outerRadius + 20;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#333"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={12}
+    >
+      {`${Math.round(percent * 100)}%`}
+    </text>
+  );
+};
+
 const SupervisorDashboardPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -439,7 +460,7 @@ const SupervisorDashboardPage = () => {
               <CardContent className="flex items-center justify-center pb-4">
                 {/* {/ Removed the inline <style> tag /} */}
                 <ChartContainer
-                  config={agentBreakdownConfig} 
+                  config={agentBreakdownConfig}
                   className=" aspect-square max-h-[250px] w-[250px] h-[250px] mx-auto"
                 >
                   {/* <ResponsiveContainer width="100%" height="100%"> */}
@@ -453,19 +474,24 @@ const SupervisorDashboardPage = () => {
                       dataKey="value"
                       nameKey="name"
                       innerRadius={60}
-                      strokeWidth={5}
+                      outerRadius={80}
+                      strokeWidth={2}
+                      label={renderCustomizedLabel}
+                      
                     >
                       {/* {/ Cells now directly use the 'fill' property from the data /} */}
                       {agentBreakdownData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.fill} />
                       ))}
                     </Pie>
-                    <ChartLegend
-                      content={state.map((entry, index) => (
-                        <ChartLegendContent nameKey={index} />
-                      ))}
-                      className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
-                    />
+                    
+                      <ChartLegend
+                        content={state.map((entry, index) => (
+                          <ChartLegendContent nameKey={index} />
+                        ))}
+                        className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                      />
+                    
                   </PieChart>
                   {/* </ResponsiveContainer> */}
                 </ChartContainer>

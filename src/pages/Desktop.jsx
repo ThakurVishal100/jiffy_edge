@@ -7,7 +7,6 @@ import UserManagement from "../pages/UserManagement";
 import { setActiveContent } from "../redux/slices/userSlice";
 import Dashboard from "../Activities/Dashboard";
 import Reports from "../Activities/Reports";
-import Settings from "../Activities/Settings";
 import { recordActivity } from "../redux/RecordActivity/activitySlice";
 // import { toast } from "react-toastify";
 import {

@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/card"; // Card layout components
 import { Button } from "@/components/ui/button"; // Button component
 import { Separator } from "@/components/ui/separator"; // Separator component
-
-// Import Lucide icons
+import { useDispatch } from "react-redux";
+import { setSelectedMenu } from "@/redux/slices/menuSlice";
 import {
   BarChart,
   ClipboardList,
@@ -22,7 +22,7 @@ import {
   Radio,
   Book,
   RadioTower,
-  MessageSquare, 
+  MessageSquare,
   FileText,
   Settings,
   PlusCircle,
@@ -79,13 +79,13 @@ const systemStatusData = [
   },
 ];
 
-// Mock data for Quick Actions
 const quickActionsData = [
-  { id: 1, text: "View System Reports", icon: BarChart, href: "#" }, // Use href="#" for placeholder links
-  { id: 2, text: "Check Audit Logs", icon: ClipboardList, href: "#" },
-  { id: 3, text: "Browse Call Recordings", icon: Voicemail, href: "#" },
-  { id: 4, text: "Manage Users", icon: Users, href: "#" },
+  { id: 1, text: "View System Reports", icon: BarChart, menuKey: "Reports" },
+  { id: 2, text: "Check Audit Logs", icon: ClipboardList, menuKey: "Audit Logs" },
+  { id: 3, text: "Browse Call Recordings", icon: Voicemail, menuKey: "Call Recordings" },
+  { id: 4, text: "Manage Users", icon: Users, menuKey: "User Management" },
 ];
+
 
 // Mock data for Recent Issues
 const recentIssuesData = [
@@ -250,6 +250,11 @@ const ModuleCard = ({ module }) => {
 // --- Main Page Component ---
 
 const AdminDashboardPage = () => {
+  const dispatch = useDispatch();
+
+  const handleMenuClick = (menuName) => {
+    dispatch(setSelectedMenu(menuName));
+  };
   return (
     // Main container for the page
     <div className="flex flex-col min-h-screen bg-gray-100 p-6 md:p-8">
@@ -306,26 +311,27 @@ const AdminDashboardPage = () => {
         </Card>
 
         {/* {/ Quick Actions & Recent Issues Section /} */}
-        <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          {/* {/ Quick Actions /} */}
+        <div className="lg:col-span-1 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+          {/* Quick Actions */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">
+              Quick Actions
+            </h3>
             <ul className="space-y-3">
-              {/* {/ Increased spacing /} */}
               {quickActionsData.map((action) => {
                 const Icon = action.icon;
                 return (
                   <li key={action.id}>
-                    <a
-                      href={action.href}
-                      className="flex items-center text-sm text-blue-600 hover:underline group"
+                    <button
+                      onClick={() => handleMenuClick(action.menuKey)}
+                      className="flex items-center w-full text-left px-3 py-2 rounded-md border border-gray-200 hover:bg-gray-50 transition text-slate-900 text-sm font-medium cursor-pointer"
                     >
                       <Icon
-                        className="h-4 w-4 mr-2 text-gray-500 group-hover:text-blue-600"
+                        className="h-4 w-4 mr-2 text-gray-500"
                         aria-hidden="true"
                       />
                       {action.text}
-                    </a>
+                    </button>
                   </li>
                 );
               })}
@@ -333,24 +339,33 @@ const AdminDashboardPage = () => {
           </div>
 
           <Separator className="my-6" />
-          {/* {/ Divider /} */}
 
+          {/* Recent Issues */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Recent issues</h3>
+            <h3 className="text-sm font-semibold text-slate-800 mb-2">
+              Recent issues
+            </h3>
             <ul className="space-y-2">
               {recentIssuesData.map((issue) => {
                 const Icon = issue.icon;
                 return (
-                  <li key={issue.id} className="flex items-start">
+                  <li
+                    key={issue.id}
+                    className="flex items-start text-sm text-slate-700"
+                  >
                     <Icon
-                      className={`h-4 w-4 mr-2 mt-0.5 flex-shrink-0 ${issue.color}`}
+                      className={`h-4 w-4 mr-2 mt-0.5 ${issue.color}`}
                       aria-hidden="true"
                     />
-                    <span className="text-sm text-gray-600">{issue.text}</span>
+                    <span>
+                      <strong className="text-slate-800">
+                        CRM Integration:
+                      </strong>{" "}
+                      2023-04-10: 15min degraded performance
+                    </span>
                   </li>
                 );
               })}
-              {/* {/ Placeholder if no issues /} */}
               {recentIssuesData.length === 0 && (
                 <p className="text-sm text-gray-500">
                   No recent issues reported.

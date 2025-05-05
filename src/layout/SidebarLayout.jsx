@@ -1,7 +1,10 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../pages/Sidebar/Sidebar";
+
+import { setSelectedMenu, selectSelectedMenu } from "../redux/slices/menuSlice";
+
 import axios from "axios";
 import SupervisorDashboardPage from "../pages/SupervisorDashboardPage/SupervisorDashboardPage";
 import ReportingPage from "../pages/ReportingPage/ReportingPage";
@@ -17,30 +20,28 @@ import BroadcastManagementPage from "../pages/BroadcastManagementPage/BroadcastM
 import WhatsAppTemplatesPage from "../pages/WhatsAppTemplatesPage/WhatsAppTemplatesPage";
 import AuditLogsPage from "../pages/AuditLogsPage/AuditLogsPage";
 import SystemSettingsPage from "../pages/SystemSettingsPage/SystemSettingsPage";
+import ProfilePage from "../pages/Activites/ProfilePage";
 
 const SidebarLayout = () => {
   const [menus, setMenus] = useState([]);
-  const [selectedMenu, setSelectedMenu] = useState("Dashboard");
-  const { token, user } = useSelector((state) => state.auth);
-  // const roleId = user?.roleId;
-  // let menuNames = [];
+  const dispatch = useDispatch();
+  const selectedMenu = useSelector(selectSelectedMenu); 
   const roleId = localStorage.getItem("roleId");
 
   const renderContent = () => {
     switch (selectedMenu) {
-      case "Dashboard":
-        if (selectedMenu === "Dashboard") {
-          switch (roleId) {
-            case "1":
-              return <SupervisorDashboardPage />;
-            case "2":
-              return <AgentDashboardPage />;
-            case "3":
-              return <AdminDashboardPage />;
-            // default:
-            //   return <SupervisorDashboardPage />;
-          }
+      case "Dashboard": 
+        switch (roleId) {
+          case "1":
+            return <SupervisorDashboardPage />;
+          case "2":
+            return <AgentDashboardPage />;
+          case "3":
+            return <AdminDashboardPage />;
+          // default:
+          //   return <Dashboard />;
         }
+        // break;
 
       case "Reports":
         return <ReportingPage />;
@@ -75,8 +76,10 @@ const SidebarLayout = () => {
       case "System Settings":
         return <SystemSettingsPage />;
 
-      default:
-        return <Dashboard />;
+      case "Profile":
+        return <ProfilePage />;
+      // default:
+      //   return <Dashboard />;
     }
   };
 
@@ -98,9 +101,13 @@ const SidebarLayout = () => {
 
         // menuNames = response.data.map((item) => item.menuName);
 
-        // console.log("Menu data received from backend:", response.data);
         if (response.data) {
           setMenus(response.data);
+
+          // ✅ Set default selected menu from Redux if needed
+          if (!selectedMenu && response.data.length > 0) {
+            dispatch(setSelectedMenu(response.data[0].menuName));
+          }
         }
       } catch (error) {
         console.error("Error fetching menus:", error);
@@ -108,15 +115,15 @@ const SidebarLayout = () => {
     };
 
     fetchMenus();
-  }, []);
+  }, [dispatch, roleId, selectedMenu]);
 
   return (
     <div className="flex">
-      <div className="w-56 bg-white shadow-md sticky top-0 h-screen z-10">
+      <div className=" bg-white shadow-md sticky top-0 h-screen z-10">
         <Sidebar
           menus={menus}
           selectedMenu={selectedMenu}
-          setSelectedMenu={setSelectedMenu}
+          setSelectedMenu={(menu) => dispatch(setSelectedMenu(menu))}
         />
       </div>
       <div className="flex-1 overflow-auto">
