@@ -1,6 +1,7 @@
 // utils/logoutHandler.js
 import { logout } from "../redux/slices/userSlice"; 
 import { useNavigate } from "react-router-dom";
+import { clearSelectedMenu } from "../redux/slices/menuSlice";
 import { useDispatch } from "react-redux";
 
 export const useLogoutHandler = () => {
@@ -11,6 +12,7 @@ export const useLogoutHandler = () => {
     localStorage.clear();
     sessionStorage.clear();
     dispatch(logout());
+    dispatch(clearSelectedMenu());
     navigate("/");
   };
 };

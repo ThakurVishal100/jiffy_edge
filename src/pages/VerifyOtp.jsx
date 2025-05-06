@@ -11,7 +11,6 @@ import {
 import { apiPost } from "../services/apiService";
 
 const VerifyOtp = () => {
-
   const [countDown, setCountDown] = useState(0);
   const [resendDisabled, setResendDisabled] = useState(false);
   const [otp, setOtp] = useState("");
@@ -50,7 +49,7 @@ const VerifyOtp = () => {
         email: stateData.email,
         userId: stateData?.userId,
         rememberMe: stateData?.rememberMe,
-        flow: stateData?.flow, 
+        flow: stateData?.flow,
       };
       localStorage.setItem("pendingUser", JSON.stringify(userObj));
       setPendingUser(userObj);
@@ -66,7 +65,7 @@ const VerifyOtp = () => {
       setTimeout(() => {
         sendOtp(localPendingUser.email);
       }, 100);
-      
+
       // sendOtp(localPendingUser.email);
     } else {
       navigate("/login");
@@ -134,7 +133,7 @@ const VerifyOtp = () => {
               },
             }
           );
-      
+
           if (sessionResponse?.sessionId) {
             localStorage.setItem("sessionId", sessionResponse.sessionId);
             console.log("Session started:", sessionResponse.sessionId);
@@ -144,22 +143,20 @@ const VerifyOtp = () => {
         } catch (sessionErr) {
           console.error("Error starting session:", sessionErr);
         }
-      
 
         //  extra functionality may be remove later
         const roleId = data.roleId;
-        if(roleId === 3){
+        // console.log("Role ID:", roleId);
+        
+        if (roleId === 3) {
           navigate("/admin-dashboard", { state: { email: pendingUser.email } });
-        }else if(roleId === 2){
+        } else if (roleId === 2) {
           navigate("/agent-dashboard", { state: { email: pendingUser.email } });
+        } else {
+          navigate("/supervisor-dashboard", {
+            state: { email: pendingUser.email },
+          });
         }
-        else{
-          navigate("/supervisor-dashboard", { state: { email: pendingUser.email } });
-
-        }
-
-
-
       } else {
         toast.error("Invalid verification flow.");
       }
@@ -175,11 +172,15 @@ const VerifyOtp = () => {
     const stored = getPendingUser();
     if (!stored) {
       toast.error("User info not found. Please login again.");
-      return;a
+      return;
+      a;
     }
 
     try {
-      const response=await apiPost(`v1/auth/send-otp?email=${stored.email}`, {});
+      const response = await apiPost(
+        `v1/auth/send-otp?email=${stored.email}`,
+        {}
+      );
       // toast.success("OTP resent successfully");
       if (response.status === 200) {
         toast.success("OTP resent successfully");
@@ -194,10 +195,14 @@ const VerifyOtp = () => {
   return (
     <div className="flex justify-center items-center h-screen p-4 bg-gray-100">
       <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">OTP Verification</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          OTP Verification
+        </h2>
         <p className="text-sm text-gray-500 mb-6">
           OTP sent to{" "}
-          <span className="font-medium text-gray-700">{pendingUser?.email}</span>
+          <span className="font-medium text-gray-700">
+            {pendingUser?.email}
+          </span>
         </p>
 
         <form onSubmit={handleOtpVerify} className="space-y-5">

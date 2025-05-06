@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 const ChangesProfile = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const userId = localStorage.getItem("userId");
+  // const userId = useSelector(selectUserId);
+
   const navigate = useNavigate();
   const [profileData, setProfileData] = useState({
     currentPassword: "",
@@ -109,6 +111,8 @@ const ChangesProfile = () => {
 
   const handleChangePassword = async () => {
     const userId = localStorage.getItem("userId");
+    // const userId = useSelector(selectUserId);
+
     const { currentPassword, newPassword, confirmPassword } = profileData;
 
     if (!userId) {

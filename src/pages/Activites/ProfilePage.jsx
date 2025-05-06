@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 const ProfilePage = () => {
   const [profileData, setProfileData] = useState(null);
   const userId = localStorage.getItem("userId");
+  // const userId = useSelector(selectUserId);
+
 
   useEffect(() => {
     const fetchUserData = async () => {

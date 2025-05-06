@@ -45,6 +45,7 @@ const Desktop = () => {
   // const [roleId] = useState(1);
   const [profileData, setProfileData] = useState(null);
   const userId = localStorage.getItem("userId");
+  // const userId = useSelector(selectUserId);
   const [menus, setMenus] = useState([]);
   const [expandedMenus, setExpandedMenus] = useState({});
   const handleSidebarClick = (content) => {
@@ -55,9 +56,13 @@ const Desktop = () => {
     try {
       // Get roleId from state or localStorage
       const roleId = localStorage.getItem("roleId") ;
+      // const roleId = useSelector(selectRoleId);
+
       // console.log("Role ID:", roleId);
       
       const token = localStorage.getItem("token");
+      // const token = useSelector(selectToken);
+
 
       const response = await axios.get(
         `http://localhost:8080/api/menu/role/${roleId}`,

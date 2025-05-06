@@ -86,7 +86,7 @@
         console.log("User activity detected, checking session...");
     
         const token =
-          localStorage.getItem("token") || sessionStorage.getItem("token");
+        useSelector(selectToken)|| sessionStorage.getItem("token");
         const sessionId = localStorage.getItem("sessionId");
     
         if (!token || isTokenExpired(token)) {

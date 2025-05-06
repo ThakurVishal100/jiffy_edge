@@ -4,9 +4,9 @@ import { FaFacebook, FaGoogle } from "react-icons/fa";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; 
+import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/protectedroute/authSlice.js";  
+import { loginSuccess } from "../redux/protectedroute/authSlice.js";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,17 +17,14 @@ const Login = () => {
   const loginInProgress = useRef(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
 
   const handleLogin = async (e) => {
-     
     e.preventDefault();
-    if(loginInProgress.current) return;
+    if (loginInProgress.current) return;
     loginInProgress.current = true;
 
     const deviceId = navigator.userAgent;
     const deviceName = navigator.userAgent;
-
 
     localStorage.setItem(
       "loginPayload",
@@ -59,7 +56,6 @@ const Login = () => {
       // console.log("Login Response", data);
 
       localStorage.setItem("token", data.token);
-
 
       if (response.ok) {
         // console.log(data.requireOtp);
@@ -100,7 +96,7 @@ const Login = () => {
               roleId: data.roleId,
             })
           );
- 
+
           navigate("/desktop");
         }
       } else {
@@ -109,10 +105,9 @@ const Login = () => {
     } catch (err) {
       setErrorMessage("Something went wrong!");
       console.error(err);
-    }finally{
+    } finally {
       loginInProgress.current = false;
     }
-    
   };
 
   const handleGoogleLogin = async (response) => {
@@ -186,18 +181,17 @@ const Login = () => {
           );
         }
 
-
         //  extra functionality may be remove later
 
-        if(roleId === 3){
+        if (roleId === 3) {
           navigate("/admin-dashboard");
-        }else{
+        } else if (roleId === 2) {
+          navigate("/agent-dashboard");
+        } else {
           navigate("/supervisor-dashboard");
         }
-
-
-        
       }
+      
     } catch (error) {
       let errorMsg = "An error occurred during Google login.";
       if (error.response?.data?.message) errorMsg = error.response.data.message;
@@ -214,7 +208,7 @@ const Login = () => {
 
   // const handleGoogleLogin = async (credentialResponse) => {
   //   const { credential } = credentialResponse;
-  
+
   //   try {
   //     const response = await fetch("http://localhost:8080/api/v1/auth/google-login", {
   //       method: "POST",
@@ -223,11 +217,10 @@ const Login = () => {
   //       },
   //       body: JSON.stringify({ credential }),
   //     });
-  
+
   //     const data = await response.json();
   //     console.log("Google Login Response", data);
 
-  
   //     if (response.ok) {
   //       localStorage.setItem("token", data.token);
   //       localStorage.setItem(
@@ -249,7 +242,6 @@ const Login = () => {
   //     toast.error("Something went wrong during Google login!");
   //   }
   // };
-  
 
   return (
     <GoogleOAuthProvider clientId="718629409608-esd92b3isih1jmvet95pmlfjojqnv9qh.apps.googleusercontent.com">
@@ -259,10 +251,7 @@ const Login = () => {
             <h2 className="text-2xl font-medium mb-2">Login</h2>
             <p className="mb-6">
               Don't have an account?{" "}
-              <Link
-                to="/signup"
-                className="text-blue-600 hover:underline"
-              >
+              <Link to="/signup" className="text-blue-600 hover:underline">
                 Sign up
               </Link>
             </p>

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
+// import { Outlet } from "react-router-dom";
 import Sidebar from "../pages/Sidebar/Sidebar";
 
 import { setSelectedMenu, selectSelectedMenu } from "../redux/slices/menuSlice";
@@ -15,33 +15,44 @@ import AcdRulesPage from "../pages/AcdRules/AcdRulesPage";
 import IvrBuilderPage from "../pages/IvrBuilder/IvrBuilderPage";
 import DirectoryManagementPage from "../pages/DirectoryManagement/DirectoryManagementPage";
 import AdminDashboardPage from "../pages/AdminDashboardPage/AdminDashboardPage";
-import AgentDashboardPage from "../pages/AgentDashboard/AgentDashboard";
+// import AgentDashboardPage from "../pages/AgentDashboard/AgentDashboard";
 import BroadcastManagementPage from "../pages/BroadcastManagementPage/BroadcastManagementPage";
 import WhatsAppTemplatesPage from "../pages/WhatsAppTemplatesPage/WhatsAppTemplatesPage";
 import AuditLogsPage from "../pages/AuditLogsPage/AuditLogsPage";
 import SystemSettingsPage from "../pages/SystemSettingsPage/SystemSettingsPage";
 import ProfilePage from "../pages/Activites/ProfilePage";
+import AgentDashboard from "../pages/AgentDashboard/AgentDashboard";
+// import { selectRoleId } from "../redux/protectedroute/authSlice";
+// import { selectToken } from "../redux/protectedroute/authSlice";
+// import { selectUserId } from "../redux/protectedroute/authSlice";
+
 
 const SidebarLayout = () => {
   const [menus, setMenus] = useState([]);
   const dispatch = useDispatch();
-  const selectedMenu = useSelector(selectSelectedMenu); 
+  const selectedMenu = useSelector(selectSelectedMenu);
+  
+  // const token = useSelector(selectToken);
+  const token = localStorage.getItem("token");
   const roleId = localStorage.getItem("roleId");
+
+  // const roleId = useSelector(selectRoleId);
+
 
   const renderContent = () => {
     switch (selectedMenu) {
-      case "Dashboard": 
+      case "Dashboard":
         switch (roleId) {
           case "1":
             return <SupervisorDashboardPage />;
           case "2":
-            return <AgentDashboardPage />;
+            return <AgentDashboard />;
           case "3":
             return <AdminDashboardPage />;
           // default:
           //   return <Dashboard />;
         }
-        // break;
+      // break;
 
       case "Reports":
         return <ReportingPage />;
@@ -85,10 +96,13 @@ const SidebarLayout = () => {
 
   useEffect(() => {
     const fetchMenus = async () => {
-      try {
-        const roleId = localStorage.getItem("roleId");
-        const token = localStorage.getItem("token");
+      // const roleId = localStorage.getItem("roleId");
+      // const token = localStorage.getItem("token");
+      
 
+      if (!roleId || !token) return;
+
+      try {
         const response = await axios.get(
           `http://localhost:8080/api/menu/role/${roleId}`,
           {

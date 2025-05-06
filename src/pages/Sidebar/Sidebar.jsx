@@ -32,15 +32,18 @@ import {
   LogOutIcon,
 } from "lucide-react";
 import axios from "axios";
+// import { selectUserId } from "../../redux/protectedroute/authSlice";
 
 const Sidebar = ({ menus }) => {
   const userId = localStorage.getItem("userId");
+  // const userId = useSelector(selectUserId);
+
   //   const [selectedMenu, setSelectedMenu] = useState("Dashboard");
   //   const [menus, setMenus] = useState([]);
   const [profileData, setProfileData] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const logoutHandler = useLogoutHandler();
 
